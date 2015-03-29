@@ -1,0 +1,11 @@
+---
+mysql_databases:
+  - name: test
+
+
+mysql_users:
+  - user: root
+    password: ""
+    host: localhost
+    priv: "*.*:ALL,GRANT"
+    #database: test
