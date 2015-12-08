@@ -106,9 +106,7 @@
   mysql_db:
     state=present
     name="{{ item.name }}"
-    {% if item.import is defined %}
-      import="{{ item.import }}"
-    {% endif %}
+    import="{{ item.import | default(omit) }}"
   when: mysql_databases is defined
   with_items: mysql_databases
   tags:
