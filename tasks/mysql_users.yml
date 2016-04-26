@@ -1,0 +1,53 @@
+---
+- name: Create MySQL maitenance user
+  sudo: yes
+  mysql_user:
+    state=present
+    name="{{ mysql_admin_user }}"
+    password="{{ mysql_admin_password }}"
+    host="{{ mysql_admin_hostname }}"
+    priv="*.*:ALL,GRANT"
+
+
+#- name: Configure .my.cnf file with maitenance user credentials
+#  sudo: yes
+#  template:
+#    src=.my.cnf
+#    dest=~/.my.cnf
+
+
+- name: Remove MySQL insecure users
+  sudo: yes
+  mysql_user:
+    state=absent
+    name={{ item.user }}
+    host="{{ item.host }}"
+  with_items:
+    - { user: "", host: "localhost" }
+    - { user: "", host: "127.0.0.1" }
+    - { user: "", host: "::1" }
+    - { user: "", host: $ansible_hostname }
+    - { user: "root", host: "localhost" }
+    - { user: "root", host: "127.0.0.1" }
+    - { user: "root", host: "::1" }
+    - { user: "root", host: $ansible_hostname }
+
+
+- name: Create MySQL users
+  sudo: yes
+  mysql_user:
+    state=present
+    name="{{ item.user }}"
+    password="{{ item.password }}"
+    {% if item.database is defined %}
+      priv="{{ item.database }}.*:ALL"
+    {% else %}
+      priv="{{ item.priv }}"
+    {% endif %}
+    {% if item.host is defined %}
+      host="{{ item.host }}"
+    {% else %}
+      host="localhost"
+    {% endif %}
+  when: mysql_users is defined
+  with_items: mysql_users

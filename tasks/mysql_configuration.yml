@@ -1,0 +1,8 @@
+---
+- name: Create Mysql configuration files
+  sudo: yes
+  template:
+    src=etc/mysql/conf.d/my.cnf
+    dest={{ mysql_config_include_dir }}/my.cnf
+  notify:
+    - restart mysql
