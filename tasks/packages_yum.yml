@@ -1,0 +1,16 @@
+---
+- name: Add EPEL (Extra Packages for Enterprise Linux) repository
+  sudo: yes
+  command:
+    rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+  register: command_result
+  failed_when: not "is already installed:" in command_result.stderr
+  changed_when: not "is already installed:" in command_result.stderr
+
+- name: Install Percona packages
+  sudo: yes
+  yum: pkg={{ item }} state=present
+  with_items:
+    # Python package (required for mysql_user, mysql_db)
+    - MySQL-python
+    - mytop

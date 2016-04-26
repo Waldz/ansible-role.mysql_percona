@@ -1,0 +1,9 @@
+---
+- name: Create MySQL databases
+  sudo: yes
+  mysql_db:
+    state=present
+    name="{{ item.name }}"
+    import="{{ item.import | default(omit) }}"
+  when: mysql_databases is defined
+  with_items: mysql_databases
