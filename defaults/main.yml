@@ -6,6 +6,7 @@ mysql_admin_user: mysql-sys-maint
 #mysql_admin_password: ""
 mysql_admin_hostname: "%"
 
+mysql_users: []
 #mysql_users:
 #  - user: admin
 #    password: "admin"

@@ -5,5 +5,4 @@
     state=present
     name="{{ item.name }}"
     import="{{ item.import | default(omit) }}"
-  when: mysql_databases is defined
-  with_items: mysql_databases
+  with_items: "{{ mysql_databases }}"

@@ -42,5 +42,4 @@
     {% else %}
       host="localhost"
     {% endif %}
-  when: mysql_users is defined
-  with_items: mysql_users
+  with_items: "{{ mysql_users }}"
