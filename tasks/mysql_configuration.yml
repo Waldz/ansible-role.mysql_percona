@@ -1,0 +1,22 @@
+---
+- name: Create Mysql configuration files
+  sudo: yes
+  template:
+    src=etc/mysql/conf.d/my.cnf
+    dest={{ mysql_config_include_dir }}/my.cnf
+  notify:
+    - restart mysql
+
+
+- name: Configure .my.cnf file with maintenance user credentials
+  sudo: yes
+  template:
+    src=.my.cnf
+    dest=~/.my.cnf
+
+
+- name: Configure "mytop" tool
+  sudo: yes
+  template:
+    src=.mytop
+    dest=~/.mytop

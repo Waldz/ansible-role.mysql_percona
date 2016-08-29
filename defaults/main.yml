@@ -2,10 +2,13 @@
 mysql_databases:
   - name: test
 
+mysql_admin_user: mysql-sys-maint
+#mysql_admin_password: ""
+mysql_admin_hostname: "%"
 
-mysql_users:
-  - user: root
-    password: ""
-    host: localhost
-    priv: "*.*:ALL,GRANT"
-    #database: test
+#mysql_users:
+#  - user: admin
+#    password: "admin"
+#    host: localhost
+#    priv: "*.*:ALL,GRANT"
+#    #database: test

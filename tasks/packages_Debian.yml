@@ -1,0 +1,37 @@
+---
+- name: Add Percona apt signing key
+  sudo: yes
+  apt_key: url=http://www.percona.com/redir/downloads/RPM-GPG-KEY-percona state=present
+  #apt_key: keyserver=keys.gnupg.net id=1C4CBDCDCD2EFD2A state=present # >= 1.6
+
+
+- name: Add Percona repository
+  sudo: yes
+  apt_repository: state=present repo='{{ item }}'
+  with_items:
+    - deb http://repo.percona.com/apt trusty main
+    - deb-src http://repo.percona.com/apt trusty main
+
+
+- name: Update apt cache
+  sudo: yes
+  apt: update_cache=yes
+
+
+- name: Install Percona packages
+  sudo: yes
+  apt: pkg={{ item }} state=present update_cache=yes
+  with_items:
+    - percona-server-common-5.6
+    - percona-server-client-5.6
+    - percona-server-server-5.6
+    # Python package (required for mysql_user, mysql_db)
+    - python-mysqldb
+    - mytop
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+
+- name: Start mysql
+  sudo: yes
+  service: name=mysql state=started
