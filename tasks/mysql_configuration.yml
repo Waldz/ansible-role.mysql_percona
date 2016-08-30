@@ -8,15 +8,18 @@
     - restart mysql
 
 
+- name: Create MySQL maintenance user
+  sudo: yes
+  mysql_user:
+    state=present
+    name="{{ mysql_admin_user }}"
+    password="{{ mysql_admin_password }}"
+    host="{{ mysql_admin_hostname }}"
+    priv="*.*:ALL,GRANT"
+
+
 - name: Configure .my.cnf file with maintenance user credentials
   sudo: yes
   template:
     src=.my.cnf
     dest=~/.my.cnf
-
-
-- name: Configure "mytop" tool
-  sudo: yes
-  template:
-    src=.mytop
-    dest=~/.mytop

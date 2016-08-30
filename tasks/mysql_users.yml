@@ -1,14 +1,4 @@
 ---
-- name: Create MySQL maintenance user
-  sudo: yes
-  mysql_user:
-    state=present
-    name="{{ mysql_admin_user }}"
-    password="{{ mysql_admin_password }}"
-    host="{{ mysql_admin_hostname }}"
-    priv="*.*:ALL,GRANT"
-
-
 - name: Remove MySQL insecure users
   sudo: yes
   mysql_user:
@@ -32,14 +22,7 @@
     state=present
     name="{{ item.user }}"
     password="{{ item.password }}"
-    {% if item.database is defined %}
-      priv="{{ item.database }}.*:ALL"
-    {% else %}
-      priv="{{ item.priv }}"
-    {% endif %}
-    {% if item.host is defined %}
-      host="{{ item.host }}"
-    {% else %}
-      host="localhost"
-    {% endif %}
+    priv="{{ item.priv | default(omit) }}"
+    priv="{{ item.database | default(omit) }}.*:ALL"
+    host="{{ item.host | default('localhost') }}"
   with_items: "{{ mysql_users }}"

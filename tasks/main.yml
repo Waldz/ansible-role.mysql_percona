@@ -19,6 +19,12 @@
      - mysql_config
 
 
+- include: mytop.yml
+  tags:
+    - mysql
+    - mysql_config
+
+
 - include: mysql_users.yml
   tags:
     - mysql
@@ -29,4 +35,3 @@
   tags:
     - mysql
     - mysql_data
-

@@ -1,0 +1,11 @@
+---
+- name: Create MySQL "test" database
+  sudo: yes
+  mysql_db: state=present name="test"
+
+
+- name: Configure "mytop" tool
+  sudo: yes
+  template:
+    src=.mytop
+    dest=~/.mytop
