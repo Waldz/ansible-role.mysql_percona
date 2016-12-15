@@ -5,7 +5,7 @@
 
 
 - include: packages_Debian.yml
-  when: ansible_pkg_mgr == "Debian"
+  when: ansible_os_family == "Debian"
   tags: mysql
 
 - include: packages_RedHat.yml
