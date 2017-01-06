@@ -8,14 +8,49 @@
     - restart mysql
 
 
-- name: Create MySQL maintenance user
+- name: Acquire temporary root pass
+  shell: >
+    awk -F': ' '$0 ~ "temporary password"{print $2}' {{ mysql_log_error }}
+  register: mysql_root_temp_password
+
+
+- name: Try to log in with default root password
+  command: 'mysql -uroot -p"{{ mysql_root_temp_password.stdout }}"'
+  register: default_root_password_status
+  failed_when: false
+  changed_when: ('expired' in default_root_password_status.stdout)
+
+
+- name: Set new password from temporary password
+  shell: 'mysql -e "SET PASSWORD = PASSWORD(''{{ mysql_admin_password }}'');" --connect-expired-password -uroot -p"{{ mysql_root_temp_password.stdout }}"'
+  when: ('expired' in default_root_password_status.stdout)
+  changed_when: ('expired' in default_root_password_status.stdout)
+
+
+- name: Create MySQL maintenance user via temporary credentials
   sudo: yes
   mysql_user:
     state=present
+    login_user=root
+    login_password="{{ mysql_admin_password }}"
     name="{{ mysql_admin_user }}"
     password="{{ mysql_admin_password }}"
     host="{{ mysql_admin_hostname }}"
     priv="*.*:ALL,GRANT"
+  when: ('expired' in default_root_password_status.stdout)
+
+
+- name: Create MySQL maintenance user via regular maintenance credentials
+  sudo: yes
+  mysql_user:
+    state=present
+    login_user="{{ mysql_admin_user }}"
+    login_password="{{ mysql_admin_password }}"
+    name="{{ mysql_admin_user }}"
+    password="{{ mysql_admin_password }}"
+    host="{{ mysql_admin_hostname }}"
+    priv="*.*:ALL,GRANT"
+  when: ('expired' not in default_root_password_status.stdout)
 
 
 - name: Configure .my.cnf file with maintenance user credentials

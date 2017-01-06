@@ -2,3 +2,4 @@
 mysql_config_file: /etc/mysql/my.cnf
 mysql_config_include_dir: /etc/mysql/conf.d
 mysql_socket: /var/run/mysqld/mysqld.sock
+mysql_log_error: /var/log/mysql.log
